@@ -1,0 +1,54 @@
+======================================
+ AMD AI Environment Diagnostic
+======================================
+
+===== 1. OS & Kernel =====
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+VERSION_ID="26.04"
+7.0.0-42-generic
+
+===== 2. CPU =====
+Architecture:                            x86_64
+CPU(s):                                  4
+On-line CPU(s) list:                     0-3
+Model name:                              Intel(R) Core(TM) i7-7600U CPU @ 2.80GHz
+CPU(s) scaling MHz:                      62%
+NUMA node0 CPU(s):                       0-3
+
+===== 3. Memory =====
+               total        used        free      shared  buff/cache   available
+Mem:            14Gi       7.0Gi       4.2Gi       810Mi       4.8Gi       7.9Gi
+Swap:           15Gi       1.5Gi        14Gi
+
+===== 4. GPU Devices =====
+00:02.0 VGA compatible controller: Intel Corporation Kaby Lake-U GT2 [HD Graphics 620] (rev 02)
+
+===== 5. GPU Device Nodes =====
+crw-rw----+ 1 root render 226, 128 Nov  4 19:51 /dev/dri/renderD128
+
+===== 6. ROCm Installation =====
+rocminfo not found
+
+===== 7. HIP Version =====
+hipconfig not found
+
+===== 8. ROCm Packages =====
+ii  libdrm-amdgpu1:amd64                             2.4.131-1                                  amd64        Userspace interface to amdgpu-specific kernel DRM services -- runtime
+ii  xserver-xorg-video-amdgpu                        25.0.0-1                                   amd64        X.Org X server -- AMDGPU display driver
+
+===== 9. PyTorch =====
+PYTORCH ERROR: ModuleNotFoundError("No module named 'torch'")
+
+===== 10. Python & Packages =====
+Python 3.14.4
+
+===== 11. Docker =====
+Docker version 29.4.0, build 9d7ad9f
+Docker Compose version v5.1.2
+
+===== 12. GPU Process / Monitoring =====
+GPU monitoring tool not found
+
+======================================
+ Diagnostic completed
+======================================
