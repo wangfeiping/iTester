@@ -764,3 +764,57 @@ python -c "import torch, cv2, aiortc, diffusers; print('Torch:',torch.__version_
 后续还可以增加容器异常和推理帧率监控：
 
 🖥️监控 LiveTalking 运行状态轻点设置
+
+# 性能检测
+
+```text
+DEBUG:utils.logger:sleep qsize=20
+DEBUG:utils.logger:sleep qsize=20
+DEBUG:utils.logger:sleep qsize=20
+DEBUG:utils.logger:sleep qsize=19
+DEBUG:utils.logger:sleep qsize=20
+INFO:utils.logger:------actual avg final fps:25.0096
+DEBUG:utils.logger:sleep qsize=20
+DEBUG:utils.logger:sleep qsize=20
+INFO:utils.logger:------actual avg infer fps:112.0065
+```
+
+```text
+指标         反映环节   当前数据 判断
+final FPS   视频输出    25     正常：最终视频播放有多快。
+infer FPS   模型推理    112    性能充足：模型生成视频帧有多快。
+sleep qsize 缓存与限流  20     生产端正在调节：缓存里有多少待输出帧，以及系统是否正在主动减速。
+```
+
+关键设计：LiveTalking 的 WebRTC 视频轨道采用固定 25 FPS 的节奏发送，而不是推理完成后立即发送。
+
+## 1. 已经确认的三个关键机制
+
+① 视频队列最大容量为 100 帧
+
+```
+self._queue = queue.Queue(maxsize=100)
+```
+
+这意味着队列最多可以容纳 100 帧。按 25 FPS 计算，相当于 4 秒的视频数据。
+
+② 视频发送间隔固定为 40ms
+
+```
+VIDEO_PTIME = 0.040
+```
+
+对应：
+
+\\[ FPS = \frac{1}{0.040}=25 \\]
+
+③ WebRTC 使用时间戳控制发送节奏
+
+```
+wait = self._start + self.current_frame_count * VIDEO_PTIME - time.time()if wait > 0:    await asyncio.sleep(wait)
+```
+
+也就是说，WebRTC 会根据起始时间和帧序号控制视频发送节奏。
+
+
+
