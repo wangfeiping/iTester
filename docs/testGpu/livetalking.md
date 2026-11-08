@@ -528,6 +528,42 @@ python app.py \
   --transport webrtc \
   --model wav2lip \
   --avatar_id wav2lip256_avatar1
+
+cd /workspace/LiveTalking/repo
+
+#修改会话上限
+
+python app.py \
+  --transport webrtc \
+  --model wav2lip \
+  --avatar_id wav2lip256_avatar1 \
+  --max_session 10 \
+  --listenport 8010 \
+  --stun stun:stun.freeswitch.org:3478
+
+#查看端口分配范围
+cat /proc/sys/net/ipv4/ip_local_port_range
+
+#修改分配的端口范围
+#ipv4和ipv6参数相同
+sudo sysctl -w net.ipv4.ip_local_port_range="10000 10100"
+
+#查询已分配的端口（ipv6）
+sudo ss -6 -lunp
+
+#配置防火墙开放端口
+valid 1 permission
+  ANY (Source address)
+  ANY (Source port)
+  [ip address v4 or v6] (Destination address)
+  80-80 (Destination port)
+  TCP WAN → LAN
+valid 2 permission
+  ANY (Source address)
+  ANY (Source port)
+  [ip address v4 or v6] (Destination address)
+  10000-10100 (Destination port)
+  UDP WAN → LAN
 ```
 
 参数解释：
